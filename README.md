@@ -1,1 +1,1 @@
-# RGame Of Life
+# Game Of Life
