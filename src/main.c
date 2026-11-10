@@ -63,6 +63,7 @@ int main(void) {
             if (e.type == SDL_QUIT) running = 0;
             if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_ESCAPE || e.key.keysym.sym == SDLK_q)) running = 0;
             if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN)) life = !life;
+			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_r)) {init_state(state); life = 0;}
 			if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT && life == 0) {
 				int w, h;
 				SDL_GetWindowSize(win, &w, &h);
@@ -87,11 +88,12 @@ int main(void) {
 
 
 		Uint32 now = SDL_GetTicks();
-        while (now - last_step >= 100) {
+		Uint32 t = 100;
+        while (now - last_step >= t) {
             if(life) {
 				game_step(state);
 			}
-            last_step += 100;
+            last_step += t;
         }
 
 
