@@ -9,7 +9,11 @@
 #include "const.h"
 
 
-
+static int cell_at(int p, int total, int n)
+{
+    if (p < 0 || p >= total) return -1;
+    return (int)((((long long)p + 1) * n - 1) / total);
+}
 
 int main(void) {
 
@@ -45,7 +49,10 @@ int main(void) {
 
 
 
-    int running = 1;
+	int state[WIDTH][HEIGHT];
+	init_state(state);
+
+    int running = 1, life = 0;
 	Uint32 last_step = SDL_GetTicks();
 
 	//--------------------------------LOOP
@@ -54,12 +61,26 @@ int main(void) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) running = 0;
-            if (e.type == SDL_KEYDOWN && !e.key.repeat) {
-                switch (e.key.keysym.sym) {
-                case SDLK_ESCAPE: running = 0; break;
-				case SDLK_q: running = 0; break;
-                }
-            }
+            if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_ESCAPE || e.key.keysym.sym == SDLK_q)) running = 0;
+            if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN)) life = !life;
+			if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT && life == 0) {
+				int w, h;
+				SDL_GetWindowSize(win, &w, &h);
+				int gw = w - 2 * padding;
+				int gh = h - 2 * padding;
+
+				int i = cell_at(e.button.x - padding, gw, WIDTH);
+				int j = cell_at(e.button.y - padding, gh, HEIGHT);
+				if (i >= 0 && j >= 0)
+					state[i][j] = !state[i][j];
+			}
+			if (e.type == SDL_MOUSEMOTION && (e.motion.state & SDL_BUTTON_LMASK) && life == 0) {
+				int w, h;
+				SDL_GetWindowSize(win, &w, &h);
+				int i = cell_at(e.motion.x - padding, w - 2 * padding, WIDTH);
+				int j = cell_at(e.motion.y - padding, h - 2 * padding, HEIGHT);
+				if (i >= 0 && j >= 0) state[i][j] = 1;   // qui imposta a 1, non inverte
+			}
         }
 
 		//--------------------------SIMULATION
@@ -67,15 +88,17 @@ int main(void) {
 
 		Uint32 now = SDL_GetTicks();
         while (now - last_step >= 100) {
-            /* step(); */
+            if(life) {
+				game_step(state);
+			}
             last_step += 100;
         }
-
 
 
 		//-----------------------------PLOT
 
 		draw_grid(ren, win);
+		draw_state(ren, win, state);
 
 		SDL_RenderPresent(ren);
 	}
