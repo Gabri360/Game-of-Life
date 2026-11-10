@@ -48,12 +48,18 @@ int main(void) {
 	}
 
 
+	SDL_Color text_color = {200, 200, 200, 255};
+	SDL_Color state_color = {50, 150, 60, 255};
+	SDL_Color state2_color = {50, 150, 60, 100};
 
 	int state[WIDTH][HEIGHT];
+	int next_state[WIDTH][HEIGHT];
 	init_state(state);
+	init_state(next_state);
 
-    int running = 1, life = 0;
+    int running = 1, life = 0, gen = 0;
 	Uint32 last_step = SDL_GetTicks();
+	Uint32 t = 100;
 
 	//--------------------------------LOOP
     while (running) {
@@ -63,7 +69,9 @@ int main(void) {
             if (e.type == SDL_QUIT) running = 0;
             if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_ESCAPE || e.key.keysym.sym == SDLK_q)) running = 0;
             if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN)) life = !life;
-			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_r)) {init_state(state); life = 0;}
+			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_UP)) t = (Uint32)fmax(10,t-10);
+			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_DOWN)) t = (Uint32)fmin(200,t+10);
+			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_r)) {init_state(state); init_state(next_state); life = 0; gen = 0;}
 			if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT && life == 0) {
 				int w, h;
 				SDL_GetWindowSize(win, &w, &h);
@@ -73,14 +81,14 @@ int main(void) {
 				int i = cell_at(e.button.x - padding, gw, WIDTH);
 				int j = cell_at(e.button.y - padding, gh, HEIGHT);
 				if (i >= 0 && j >= 0)
-					state[i][j] = !state[i][j];
+					next_state[i][j] = !next_state[i][j];
 			}
 			if (e.type == SDL_MOUSEMOTION && (e.motion.state & SDL_BUTTON_LMASK) && life == 0) {
 				int w, h;
 				SDL_GetWindowSize(win, &w, &h);
 				int i = cell_at(e.motion.x - padding, w - 2 * padding, WIDTH);
 				int j = cell_at(e.motion.y - padding, h - 2 * padding, HEIGHT);
-				if (i >= 0 && j >= 0) state[i][j] = 1;   // qui imposta a 1, non inverte
+				if (i >= 0 && j >= 0) next_state[i][j] = 1;
 			}
         }
 
@@ -88,10 +96,12 @@ int main(void) {
 
 
 		Uint32 now = SDL_GetTicks();
-		Uint32 t = 100;
+
         while (now - last_step >= t) {
             if(life) {
-				game_step(state);
+				copy_state(state,next_state);
+				game_step(state, next_state);
+				gen++;
 			}
             last_step += t;
         }
@@ -100,7 +110,24 @@ int main(void) {
 		//-----------------------------PLOT
 
 		draw_grid(ren, win);
-		draw_state(ren, win, state);
+		draw_state(ren, win, next_state, state_color);
+		draw_state(ren, win, state, state2_color);
+
+
+		float fps = 1000.0f/(float)t;
+		int scale = 20;
+		char buf[64];
+		snprintf(buf, sizeof buf, "%.1f FPS", fps);
+		draw_text(ren, font, buf, padding, padding, scale, text_color);
+
+		if(life)
+			snprintf(buf, sizeof buf, "Running");
+		else
+			snprintf(buf, sizeof buf, "Pause");
+		draw_text(ren, font, buf, padding, padding + (int)(scale * 1.1), scale, text_color);
+
+		snprintf(buf, sizeof buf, "Gen: %d", gen);
+		draw_text(ren, font, buf, padding, padding + (int)(scale * 1.1)*2, scale, text_color);
 
 		SDL_RenderPresent(ren);
 	}

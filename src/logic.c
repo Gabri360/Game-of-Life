@@ -1,8 +1,6 @@
 #include "logic.h"
 #include <math.h>
 
-static int next_state[WIDTH][HEIGHT];
-
 void init_state(int state[][HEIGHT])
 {
 	for(int i=0; i<WIDTH; i++) {
@@ -12,16 +10,16 @@ void init_state(int state[][HEIGHT])
 	}
 }
 
-static void copy_state(int state[][HEIGHT])
+void copy_state(int state1[][HEIGHT], int state2[][HEIGHT])
 {
 	for(int i=0; i<WIDTH; i++) {
 		for(int j=0;j<HEIGHT; j++) {
-			state[i][j] = next_state[i][j];
+			state1[i][j] = state2[i][j];
 		}
 	}
 }
 
-void game_step(int state[][HEIGHT])
+void game_step(int state[][HEIGHT], int next_state[][HEIGHT])
 {
 	for(int i=0; i<WIDTH; i++) {
 		int il = (i + WIDTH - 1) % WIDTH;
@@ -48,5 +46,4 @@ void game_step(int state[][HEIGHT])
 			}
 		}
 	}
-	copy_state(state);
 }

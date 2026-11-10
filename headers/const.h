@@ -6,7 +6,7 @@
 #define FONT_FILE "assets/DejaVuSansMono.ttf"
 
 #define WIDTH 50
-#define HEIGHT 28
+#define HEIGHT (int)(WIDTH*1080/1920)
 #define padding 20
 
 #endif

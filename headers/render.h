@@ -10,6 +10,6 @@ void draw_text(SDL_Renderer *ren, TTF_Font *font, const char *text, int x, int y
 
 void draw_grid(SDL_Renderer *ren, SDL_Window *win);
 
-void draw_state(SDL_Renderer *ren, SDL_Window *win, int state[][HEIGHT]);
+void draw_state(SDL_Renderer *ren, SDL_Window *win, int state[][HEIGHT], SDL_Color color);
 
 #endif

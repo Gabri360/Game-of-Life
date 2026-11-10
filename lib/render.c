@@ -50,14 +50,14 @@ void draw_grid(SDL_Renderer *ren, SDL_Window *win)
 }
 
 
-void draw_state(SDL_Renderer *ren, SDL_Window *win, int state[][HEIGHT])
+void draw_state(SDL_Renderer *ren, SDL_Window *win, int state[][HEIGHT], SDL_Color color)
 {
 	int w, h;
 	SDL_GetWindowSize(win, &w, &h);
 	int gw = w - 2*padding;
 	int gh = h - 2*padding;
 
-	SDL_SetRenderDrawColor(ren, 50, 150, 60, 255);
+	SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, color.a);
 	for (int i = 0; i < WIDTH; i++) {
 		int x0 = padding + (int)(((long long)gw * i) / WIDTH);
 		int x1 = padding + (int)(((long long)gw * (i + 1)) / WIDTH);
