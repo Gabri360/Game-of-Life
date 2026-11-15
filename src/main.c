@@ -15,7 +15,9 @@ static int cell_at(int p, int total, int n)
     return (int)((((long long)p + 1) * n - 1) / total);
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+
+	(void)argc; (void)srgv;
 
 	//----------------------------------INIT
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
