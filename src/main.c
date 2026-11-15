@@ -17,7 +17,7 @@ static int cell_at(int p, int total, int n)
 
 int main(int argc, char *argv[]) {
 
-	(void)argc; (void)srgv;
+	(void)argc; (void)argv;
 
 	//----------------------------------INIT
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
