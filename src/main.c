@@ -90,7 +90,7 @@ int main(void) {
 				int j = cell_at(e.motion.y - padding, h - 2 * padding, HEIGHT);
 				if (i >= 0 && j >= 0) next_state[i][j] = 1;
 			}
-			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_i) && line == 0) invert_state(next_state);
+			if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_i) && life == 0) invert_state(next_state);
         }
 
 		//--------------------------SIMULATION
