@@ -83,3 +83,20 @@ function(add_rw_executable name source)
 endfunction()
 
 add_rw_executable(game_of_life  src/main.c)
+
+
+
+include(GNUInstallDirs)
+
+install(TARGETS game_of_life
+        RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/game_of_life)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/game_of_life)
+
+
+install(CODE "
+    file(MAKE_DIRECTORY \"\$ENV{DESTDIR}${CMAKE_INSTALL_FULL_BINDIR}\")
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+        \"${CMAKE_INSTALL_FULL_LIBDIR}/game_of_life/game_of_life\"
+        \"\$ENV{DESTDIR}${CMAKE_INSTALL_FULL_BINDIR}/game_of_life\")
+")

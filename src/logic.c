@@ -10,6 +10,16 @@ void init_state(int state[][HEIGHT])
 	}
 }
 
+void invert_state(int state[][HEIGHT])
+{
+	for(int i=0; i<WIDTH; i++) {
+		for(int j=0;j<HEIGHT; j++) {
+			state[i][j] = !state[i][j];
+		}
+	}
+}
+
+
 void copy_state(int state1[][HEIGHT], int state2[][HEIGHT])
 {
 	for(int i=0; i<WIDTH; i++) {
